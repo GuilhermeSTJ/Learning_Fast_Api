@@ -35,3 +35,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
 run = "fastapi dev ./learning_fast_api/app.py"
+pre_test = "task lint"
+test = "pytest --cov=learning_fast_api"
+post_test = "coverage html"
+lint = "ruff check . && ruff check . --diff"
+fix = "ruff check . --fix"
