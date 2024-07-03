@@ -19,3 +19,12 @@ class UserPublic(BaseModel):
 
 class UserDB(User):
     id: int
+
+
+class Count(BaseModel):
+    in_value1: int
+    in_value2: int
+
+
+class CountSaida(Count):
+    out_value: int

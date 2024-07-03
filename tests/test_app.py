@@ -1,14 +1,5 @@
 from http import HTTPStatus
 
-import pytest
-
-from fastapi.testclient import TestClient
-
-from learning_fast_api.app import app
-
-@pytest.fixture()
-def client():
-    return TestClient(app)
 
 def test_read_root_return_ok_and_helloWord(client):
 
@@ -33,4 +24,20 @@ def test_create_user(client):
         'username': 'test',
         'email': 'test@test.com',
         'id': 1
+    }  # Assert
+
+
+def test_conta_valores(client):
+
+    response = client.post('/count', json={
+        'in_value1': 2,
+        'in_value2': 3
+    })  # Act
+
+    assert response.status_code == HTTPStatus.CREATED  # Assert
+
+    assert response.json() == {
+        'in_value1': 2,
+        'in_value2': 3,
+        'out_value': 5
     }  # Assert
