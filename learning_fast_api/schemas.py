@@ -28,3 +28,7 @@ class Count(BaseModel):
 
 class CountSaida(Count):
     out_value: int
+
+
+class UserList(BaseModel):
+    users: list[UserPublic]

@@ -1,13 +1,12 @@
 from http import HTTPStatus
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from learning_fast_api.schemas import (
-    Count,
-    CountSaida,
     Message,
     User,
     UserDB,
+    UserList,
     UserPublic,
 )
 
@@ -32,14 +31,33 @@ def create_user(user: User):
     return user_with_id
 
 
-@app.post('/count', status_code=HTTPStatus.CREATED)
-def conta_valores(conta: Count):
-    conta_valores = CountSaida(
-        out_value=conta.in_value1 + conta.in_value2,
-        **conta.model_dump()
-    )
-    return conta_valores
-
-@app.get('/users', status_code=HTTPStatus.OK)	
-def read_users():    
+@app.get('/users', response_model=UserList)
+def read_users():
     return {'users': database}
+
+
+@app.put('/users/{user_id}', response_model=UserPublic)
+def update_user(user_id: int, user: User):
+
+    if user_id > len(database) or user_id < 1:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+            )
+
+    user_with_id = UserDB(**user.model_dump(), id=user_id)
+    database[user_id - 1] = user_with_id
+
+    return user_with_id
+
+
+@app.delete('/users/{user_id}', response_model=UserPublic)
+def delete_user(user_id: int):
+
+    if user_id > len(database) or user_id < 1:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+            )
+    user_deleted = UserDB(**user.model_dump(), id=user_id)
+    database.pop(user_id - 1)
+
+    return user_deleted
